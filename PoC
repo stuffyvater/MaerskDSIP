@@ -1,0 +1,143 @@
+<html>
+  <head>
+  </head>
+    <script type="application/javascript" src="./bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- <script src="ipfs.js"></script> -->
+    <script src="https://npmcdn.com/ipfs-api/dist/index.js"></script>
+  <body>
+    <h2>Create a Contract!</h2>
+    <button id="create">Create!</button>
+    <div id="yay">
+      Tx: <span id="yay_TxHash"></span><br/>
+      Contract: <span id="yay_ContractHash"></span><br/>
+      Status: <span style="text-align: center;" id="yay_Status">
+        <span style="vertical-align: sub;" id="yay_Loading">
+          <img src="loading.gif"/>
+        </span>
+      </span>
+    </div>
+    <br/>
+    <hr>
+    <h2>Whitelist a Stakeholder</h2>
+    Contract Address: <input type="text" id="contractAddress"/><br/>
+    Stakeholder ID: <input type="text" id="stakeholderId"/>
+    <button id="submit">Go!</button>
+    <div id="yay2"></div>
+    <hr>
+    <h2>Upload/Amend Document</h2>
+    Contract Address: <input type="text" id="contractAddress1"/><br/>
+    File: <input type="file" id="file"/>
+    <button id="submit1">Go!</button>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      // Hide statuses
+      $('#yay').hide();
+
+      var abi = [{"constant":false,"inputs":[{"name":"stakeholder","type":"address"}],"name":"whitelistStakeholder","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"whiteList","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"documentId","type":"uint256"},{"name":"newFingerprint","type":"string"}],"name":"amendDocument","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"documents","outputs":[{"name":"author","type":"address"},{"name":"fingerprint","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"admin","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[{"name":"a","type":"address"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"stakeholder","type":"address"}],"name":"StakeholderWhitelisted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"documentId","type":"uint256"},{"indexed":false,"name":"author","type":"address"},{"indexed":false,"name":"newFingerprint","type":"string"}],"name":"DocumentAmended","type":"event"}];
+
+
+      /* VARIABLES */
+      var MyContract = web3.eth.contract(abi);
+      $('#create').click(function() {
+        // Clean status
+        $('#yay > #yay_TxHash').html();
+        $('#yay > #yay_ContractHash').html();
+        $('#yay > #yay_Status').html('Synchronizing...');
+        $('#yay > #yay_Status > #yay_Loading').show();
+        var data1 = '0x606060405260405160208061062e833981016040528080519060200190919050505b80600160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908302179055505b506105d28061005c6000396000f360606040526000357c01000000000000000000000000000000000000000000000000000000009004806326ea4bf614610068578063372c12b11461008557806355389c3e146100b8578063c2ed2b051461011c578063f851a440146101ec57610063565b610002565b3461000257610083600480803590602001909190505061022a565b005b34610002576100a0600480803590602001909190505061031d565b60405180821515815260200191505060405180910390f35b346100025761011a6004808035906020019091908035906020019082018035906020019191908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050909091905050610342565b005b34610002576101376004808035906020019091905050610563565b604051808373ffffffffffffffffffffffffffffffffffffffff168152602001806020018281038252838181546001816001161561010002031660029004815260200191508054600181600116156101000203166002900480156101dc5780601f106101b1576101008083540402835291602001916101dc565b820191906000526020600020905b8154815290600101906020018083116101bf57829003601f168201915b5050935050505060405180910390f35b34610002576101fe60048050506105ac565b604051808273ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b338073ffffffffffffffffffffffffffffffffffffffff16600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1614151561028757610002565b6001600060005060008473ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060006101000a81548160ff021916908302179055507f078cba54125a07a375c22702c366fcb4d1029bafd27b1d6e93d813b1d103b6cb82604051808273ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390a15b5b5050565b600060005060205280600052604060002060009150909054906101000a900460ff1681565b3360001515600060005060008373ffffffffffffffffffffffffffffffffffffffff16815260200190815260200160002060009054906101000a900460ff161515141561038e57610002565b604060405190810160405280338152602001838152602001506002600050600085815260200190815260200160002060005060008201518160000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908302179055506020820151816001016000509080519060200190828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f1061044657805160ff1916838001178555610477565b82800160010185558215610477579182015b82811115610476578251826000505591602001919060010190610458565b5b5090506104a29190610484565b8082111561049e5760008181506000905550600101610484565b5090565b50509050507f2ebfece40746549a3b7549b22060ca8d895e54ac0096edfb3aaee7db4acdc0ee833384604051808481526020018373ffffffffffffffffffffffffffffffffffffffff168152602001806020018281038252838181518152602001915080519060200190808383829060006004602084601f0104600302600f01f150905090810190601f16801561054d5780820380516001836020036101000a031916815260200191505b5094505050505060405180910390a15b5b505050565b60026000506020528060005260406000206000915090508060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff169080600101600050905082565b600160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff168156';
+        var c = MyContract.new(web3.eth.coinbase, {from: web3.eth.coinbase, data: data1, gas: 4700000}, function(e,r) {
+          $('#yay').show();
+          console.log(e);
+          console.log(r);
+          console.log(c);
+          $('#yay > #yay_TxHash').html(r.transactionHash);
+          web3.eth.getTransaction(r.transactionHash, function(err, res) {
+            console.log(err);
+            console.log(res);
+            $('#yay > #yay_ContractHash').html(res.creates); // res.creates is the Contract ID
+
+            var cb = function() {
+              web3.eth.getTransaction(r.transactionHash, function(e_, r_) {
+                if (r_.blockHash === null) {
+                  $('#yay > #yay_Status > #yay_Loading').show();
+                  $('#yay > #yay_Status').html('Synchronizing...');
+                  sleep(5000).then(cb);
+                } else {
+                  $('#yay > #yay_Status > #yay_Loading').hide();
+                  $('#yay > #yay_Status').html('Mined!');
+                }
+              });
+            }
+            sleep(1000).then(cb);
+          });
+        });
+      });
+
+      // sleep time expects milliseconds
+      function sleep (time) {
+          return new Promise((resolve) => setTimeout(resolve, time));
+      }
+
+      $('#submit').click(function() {
+        var contractAddress = $('#contractAddress').val();
+        var stakeholder = $('#stakeholderId').val();
+        var myContractInstance = MyContract.at(contractAddress);
+        console.log(myContractInstance);
+        console.log(contractAddress);
+        myContractInstance.whitelistStakeholder(stakeholder, {from: web3.eth.coinbase, gas: 91000}, function(e,r) {
+          console.log(e);
+          console.log(r);
+          if (!e) {
+            $('#yay2').html('Stakeholder whitelisted');
+          }
+        });
+      });
+
+      $('#submit1').click(function() {
+        var files = document.getElementById('file').files;
+        if (!files.length) {
+            alert('Please select a file!');
+            return;
+        }
+
+        var file = files[0];
+        var reader = new FileReader();
+
+        reader.readAsText(file);
+        // If we use onloadend, we need to check the readyState.
+        reader.onloadend = function(evt) {
+            var i = IpfsApi("/ip4/127.0.0.1/tcp/5001");
+            i.add(i.Buffer(reader.result), function (err, res){
+                if(err || !res)
+                  return console.error("ipfs add error", err, res);
+
+                var storedDoc = res[0];
+                var fingerprint = storedDoc.hash;
+
+                $("#hashResult").show();
+                $("#hashResult").html(fingerprint);
+                console.log("fingerprint: "+ fingerprint);
+                contract = web3.eth.contract(abi);
+
+                var contractAddress = $("#contractAddress1").val();
+                evt.preventDefault();
+                var contractInstance = contract.at(contractAddress);
+
+                contractInstance.amendDocument(1234, fingerprint, {from: web3.eth.coinbase, gas: 1000000}, function(e,r){
+                  if(e){
+                      alert("An error occurred: " + e);
+                  }
+                  else {
+                      if(r){
+                          console.log("The document has been uploaded (fingerprint: " + fingerprint + ")");
+                      }
+                      console.log(r);
+                  }
+                });
+            });
+        };
+      })
+    });
+  </script>
+  </body>
+</html>
