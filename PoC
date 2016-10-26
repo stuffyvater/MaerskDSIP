@@ -1,3 +1,5 @@
+
+//create style and UI
 <html>
   <head>
   </head>
@@ -33,6 +35,7 @@
       // Hide statuses
       $('#yay').hide();
 
+// add Soldity API 
       var abi = [{"constant":false,"inputs":[{"name":"stakeholder","type":"address"}],"name":"whitelistStakeholder","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"whiteList","outputs":[{"name":"","type":"bool"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"documentId","type":"uint256"},{"name":"newFingerprint","type":"string"}],"name":"amendDocument","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"documents","outputs":[{"name":"author","type":"address"},{"name":"fingerprint","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"admin","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[{"name":"a","type":"address"}],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"stakeholder","type":"address"}],"name":"StakeholderWhitelisted","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"documentId","type":"uint256"},{"indexed":false,"name":"author","type":"address"},{"indexed":false,"name":"newFingerprint","type":"string"}],"name":"DocumentAmended","type":"event"}];
 
 
